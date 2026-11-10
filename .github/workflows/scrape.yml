@@ -1,0 +1,40 @@
+name: Scrape prices
+
+on:
+  schedule:
+    - cron: '47 21 * * *'
+  workflow_dispatch:
+    inputs:
+      only_store:
+        description: 'Scrape just one store (exact name, e.g. PCWORX). Leave blank for all.'
+        required: false
+        default: ''
+
+concurrency:
+  group: scrape
+  cancel-in-progress: false
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Test spec extraction
+        run: npm test
+
+      - name: Scrape stores
+        run: npm run scrape
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          ONLY_STORE: ${{ github.event.inputs.only_store }}
