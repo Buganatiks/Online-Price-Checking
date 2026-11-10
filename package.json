@@ -1,0 +1,17 @@
+{
+  "name": "itma",
+  "version": "1.0.0",
+  "description": "PH IT price aggregator",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "scrape": "node scraper/index.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.0"
+  }
+}
